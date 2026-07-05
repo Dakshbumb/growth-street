@@ -199,8 +199,9 @@ function RecoPage() {
         {/* Cards — mobile */}
         <div className="grid gap-3 md:hidden">
           {rows.map((r) => {
-            const diff = r.diffPct ?? 0;
-            const positive = diff >= 0;
+            const diff = r.diffPct;
+            const pending = diff == null;
+            const positive = !pending && diff >= 0;
             return (
               <div key={`${r.date}-${r.name}`} className="rounded-2xl border border-border bg-card/70 p-4 shadow-card">
                 <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
@@ -209,9 +210,13 @@ function RecoPage() {
                     <div className="text-xs text-muted-foreground">{fmtDate(r.date)}</div>
                   </div>
                   <div className="shrink-0 text-right">
-                    <div className={"text-base font-bold " + (positive ? "text-success" : "text-destructive")}>
-                      {positive ? "+" : ""}{fmtNum(diff)}%
-                    </div>
+                    {pending ? (
+                      <div className="text-sm font-bold text-muted-foreground">Pending</div>
+                    ) : (
+                      <div className={"text-base font-bold " + (positive ? "text-success" : "text-destructive")}>
+                        {positive ? "+" : ""}{fmtNum(diff!)}%
+                      </div>
+                    )}
                     <div className="mt-1"><StatusPill status={r.status} /></div>
                   </div>
                 </div>
@@ -221,7 +226,7 @@ function RecoPage() {
                   <MobileField k="Target" v={`₹${fmtNum(r.tp)}`} />
                 </div>
                 <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
-                  <span>CMP / Exit: <span className="text-foreground">₹{fmtNum(r.priceToday)}</span></span>
+                  <span>CMP / Exit: <span className="text-foreground">{r.priceToday == null ? "—" : `₹${fmtNum(r.priceToday)}`}</span></span>
                   {r.days != null && <span>{r.days} days</span>}
                 </div>
               </div>
