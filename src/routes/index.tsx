@@ -100,7 +100,9 @@ function Index() {
               </div>
               <ul className="mt-5 divide-y divide-border">
                 {recent.map((r) => {
-                  const diff = r.diffPct ?? 0;
+                  const diff = r.diffPct;
+                  const pending = diff == null;
+                  const positive = !pending && diff >= 0;
                   return (
                     <li key={`${r.date}-${r.name}`} className="flex items-center justify-between gap-3 py-3">
                       <div className="min-w-0">
@@ -110,16 +112,15 @@ function Index() {
                         </div>
                       </div>
                       <div className="shrink-0 text-right">
-                        <div
-                          className={
-                            "text-sm font-bold " +
-                            (diff >= 0 ? "text-success" : "text-destructive")
-                          }
-                        >
-                          {diff >= 0 ? "+" : ""}
-                          {diff.toFixed(2)}%
-                        </div>
-                        <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{r.status}</div>
+                        {pending ? (
+                          <div className="text-sm font-bold text-muted-foreground">Pending</div>
+                        ) : (
+                          <div className={"text-sm font-bold " + (positive ? "text-success" : "text-destructive")}>
+                            {positive ? "+" : ""}
+                            {diff!.toFixed(2)}%
+                          </div>
+                        )}
+                        <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{r.status ?? "NEW"}</div>
                       </div>
                     </li>
                   );
