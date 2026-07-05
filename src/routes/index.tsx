@@ -15,7 +15,7 @@ function computeStats(rows: Reco[]) {
   const closed = rows.filter((r) => r.status === "TP" || r.status === "SL");
   const wins = rows.filter((r) => r.status === "TP").length;
   const winRate = closed.length ? (wins / closed.length) * 100 : 0;
-  const returns = rows.map((r) => r.diffPct ?? 0);
+  const returns = rows.map((r) => r.diffPct).filter((n): n is number => n != null);
   const avgReturn = returns.reduce((a, b) => a + b, 0) / (returns.length || 1);
   const best = rows.reduce<Reco | null>((acc, r) => (!acc || (r.diffPct ?? -Infinity) > (acc.diffPct ?? -Infinity) ? r : acc), null);
   return { total, wins, winRate, avgReturn, best };
