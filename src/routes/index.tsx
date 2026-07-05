@@ -15,7 +15,7 @@ function computeStats(rows: Reco[]) {
   const closed = rows.filter((r) => r.status === "TP" || r.status === "SL");
   const wins = rows.filter((r) => r.status === "TP").length;
   const winRate = closed.length ? (wins / closed.length) * 100 : 0;
-  const returns = rows.map((r) => r.diffPct ?? 0);
+  const returns = rows.map((r) => r.diffPct).filter((n): n is number => n != null);
   const avgReturn = returns.reduce((a, b) => a + b, 0) / (returns.length || 1);
   const best = rows.reduce<Reco | null>((acc, r) => (!acc || (r.diffPct ?? -Infinity) > (acc.diffPct ?? -Infinity) ? r : acc), null);
   return { total, wins, winRate, avgReturn, best };
@@ -100,7 +100,9 @@ function Index() {
               </div>
               <ul className="mt-5 divide-y divide-border">
                 {recent.map((r) => {
-                  const diff = r.diffPct ?? 0;
+                  const diff = r.diffPct;
+                  const pending = diff == null;
+                  const positive = !pending && diff >= 0;
                   return (
                     <li key={`${r.date}-${r.name}`} className="flex items-center justify-between gap-3 py-3">
                       <div className="min-w-0">
@@ -110,16 +112,15 @@ function Index() {
                         </div>
                       </div>
                       <div className="shrink-0 text-right">
-                        <div
-                          className={
-                            "text-sm font-bold " +
-                            (diff >= 0 ? "text-success" : "text-destructive")
-                          }
-                        >
-                          {diff >= 0 ? "+" : ""}
-                          {diff.toFixed(2)}%
-                        </div>
-                        <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{r.status}</div>
+                        {pending ? (
+                          <div className="text-sm font-bold text-muted-foreground">Pending</div>
+                        ) : (
+                          <div className={"text-sm font-bold " + (positive ? "text-success" : "text-destructive")}>
+                            {positive ? "+" : ""}
+                            {diff!.toFixed(2)}%
+                          </div>
+                        )}
+                        <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{r.status ?? "NEW"}</div>
                       </div>
                     </li>
                   );

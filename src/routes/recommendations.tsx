@@ -37,11 +37,12 @@ function fmtNum(n: number | null, d = 2) {
 }
 
 function StatusPill({ status }: { status: string | null }) {
-  const s = (status ?? "").toUpperCase();
+  const s = (status ?? "NEW").toUpperCase();
   const map: Record<string, string> = {
     TP: "bg-success/15 text-success border-success/30",
     SL: "bg-destructive/15 text-destructive border-destructive/30",
     HOLD: "bg-warning/15 text-warning border-warning/30",
+    NEW: "bg-primary/15 text-primary border-primary/30",
   };
   return (
     <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${map[s] ?? "border-border text-muted-foreground"}`}>
@@ -157,8 +158,9 @@ function RecoPage() {
               </thead>
               <tbody>
                 {rows.map((r) => {
-                  const diff = r.diffPct ?? 0;
-                  const positive = diff >= 0;
+                  const diff = r.diffPct;
+                  const pending = diff == null;
+                  const positive = !pending && diff >= 0;
                   return (
                     <tr key={`${r.date}-${r.name}`} className="border-t border-border/70 hover:bg-secondary/40">
                       <Td className="whitespace-nowrap text-muted-foreground">{fmtDate(r.date)}</Td>
@@ -166,12 +168,16 @@ function RecoPage() {
                       <Td align="right">₹{fmtNum(r.entry)}</Td>
                       <Td align="right" className="text-muted-foreground">₹{fmtNum(r.sl)}</Td>
                       <Td align="right" className="text-muted-foreground">₹{fmtNum(r.tp)}</Td>
-                      <Td align="right">₹{fmtNum(r.priceToday)}</Td>
+                      <Td align="right">{r.priceToday == null ? <span className="text-muted-foreground">—</span> : `₹${fmtNum(r.priceToday)}`}</Td>
                       <Td align="right">
-                        <span className={"inline-flex items-center gap-1 font-bold " + (positive ? "text-success" : "text-destructive")}>
-                          {positive ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
-                          {positive ? "+" : ""}{fmtNum(diff)}%
-                        </span>
+                        {pending ? (
+                          <span className="text-xs font-semibold text-muted-foreground">Pending</span>
+                        ) : (
+                          <span className={"inline-flex items-center gap-1 font-bold " + (positive ? "text-success" : "text-destructive")}>
+                            {positive ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
+                            {positive ? "+" : ""}{fmtNum(diff!)}%
+                          </span>
+                        )}
                       </Td>
                       <Td><StatusPill status={r.status} /></Td>
                       <Td align="right" className="text-muted-foreground">{r.days ?? <Minus className="inline h-3 w-3" />}</Td>
@@ -193,8 +199,9 @@ function RecoPage() {
         {/* Cards — mobile */}
         <div className="grid gap-3 md:hidden">
           {rows.map((r) => {
-            const diff = r.diffPct ?? 0;
-            const positive = diff >= 0;
+            const diff = r.diffPct;
+            const pending = diff == null;
+            const positive = !pending && diff >= 0;
             return (
               <div key={`${r.date}-${r.name}`} className="rounded-2xl border border-border bg-card/70 p-4 shadow-card">
                 <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
@@ -203,9 +210,13 @@ function RecoPage() {
                     <div className="text-xs text-muted-foreground">{fmtDate(r.date)}</div>
                   </div>
                   <div className="shrink-0 text-right">
-                    <div className={"text-base font-bold " + (positive ? "text-success" : "text-destructive")}>
-                      {positive ? "+" : ""}{fmtNum(diff)}%
-                    </div>
+                    {pending ? (
+                      <div className="text-sm font-bold text-muted-foreground">Pending</div>
+                    ) : (
+                      <div className={"text-base font-bold " + (positive ? "text-success" : "text-destructive")}>
+                        {positive ? "+" : ""}{fmtNum(diff!)}%
+                      </div>
+                    )}
                     <div className="mt-1"><StatusPill status={r.status} /></div>
                   </div>
                 </div>
@@ -215,7 +226,7 @@ function RecoPage() {
                   <MobileField k="Target" v={`₹${fmtNum(r.tp)}`} />
                 </div>
                 <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
-                  <span>CMP / Exit: <span className="text-foreground">₹{fmtNum(r.priceToday)}</span></span>
+                  <span>CMP / Exit: <span className="text-foreground">{r.priceToday == null ? "—" : `₹${fmtNum(r.priceToday)}`}</span></span>
                   {r.days != null && <span>{r.days} days</span>}
                 </div>
               </div>
