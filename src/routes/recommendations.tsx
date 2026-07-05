@@ -158,8 +158,9 @@ function RecoPage() {
               </thead>
               <tbody>
                 {rows.map((r) => {
-                  const diff = r.diffPct ?? 0;
-                  const positive = diff >= 0;
+                  const diff = r.diffPct;
+                  const pending = diff == null;
+                  const positive = !pending && diff >= 0;
                   return (
                     <tr key={`${r.date}-${r.name}`} className="border-t border-border/70 hover:bg-secondary/40">
                       <Td className="whitespace-nowrap text-muted-foreground">{fmtDate(r.date)}</Td>
@@ -167,12 +168,16 @@ function RecoPage() {
                       <Td align="right">₹{fmtNum(r.entry)}</Td>
                       <Td align="right" className="text-muted-foreground">₹{fmtNum(r.sl)}</Td>
                       <Td align="right" className="text-muted-foreground">₹{fmtNum(r.tp)}</Td>
-                      <Td align="right">₹{fmtNum(r.priceToday)}</Td>
+                      <Td align="right">{r.priceToday == null ? <span className="text-muted-foreground">—</span> : `₹${fmtNum(r.priceToday)}`}</Td>
                       <Td align="right">
-                        <span className={"inline-flex items-center gap-1 font-bold " + (positive ? "text-success" : "text-destructive")}>
-                          {positive ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
-                          {positive ? "+" : ""}{fmtNum(diff)}%
-                        </span>
+                        {pending ? (
+                          <span className="text-xs font-semibold text-muted-foreground">Pending</span>
+                        ) : (
+                          <span className={"inline-flex items-center gap-1 font-bold " + (positive ? "text-success" : "text-destructive")}>
+                            {positive ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
+                            {positive ? "+" : ""}{fmtNum(diff!)}%
+                          </span>
+                        )}
                       </Td>
                       <Td><StatusPill status={r.status} /></Td>
                       <Td align="right" className="text-muted-foreground">{r.days ?? <Minus className="inline h-3 w-3" />}</Td>
