@@ -37,11 +37,12 @@ function fmtNum(n: number | null, d = 2) {
 }
 
 function StatusPill({ status }: { status: string | null }) {
-  const s = (status ?? "").toUpperCase();
+  const s = (status ?? "NEW").toUpperCase();
   const map: Record<string, string> = {
     TP: "bg-success/15 text-success border-success/30",
     SL: "bg-destructive/15 text-destructive border-destructive/30",
     HOLD: "bg-warning/15 text-warning border-warning/30",
+    NEW: "bg-primary/15 text-primary border-primary/30",
   };
   return (
     <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${map[s] ?? "border-border text-muted-foreground"}`}>
