@@ -33,7 +33,7 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-display: Georgia, "Georgia Pro", "Noto Serif", ui-serif, serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
