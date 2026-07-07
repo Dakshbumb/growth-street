@@ -1,14 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, TrendingUp, ShieldCheck, LineChart, Users, Instagram, Target, Sparkles } from "lucide-react";
 import { SiteLayout } from "@/components/site-layout";
-import logoAsset from "@/assets/growth-street-logo.png.asset.json";
-import recos from "@/data/recommendations.json";
+import { useRecommendations, type Reco } from "@/hooks/use-recommendations";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
-
-type Reco = (typeof recos)[number];
 
 function computeStats(rows: Reco[]) {
   const total = rows.length;
@@ -22,8 +19,8 @@ function computeStats(rows: Reco[]) {
 }
 
 function Index() {
-  const stats = computeStats(recos as Reco[]);
-  const recent = [...(recos as Reco[])].sort((a, b) => (a.date ?? "").localeCompare(b.date ?? "")).slice(-4).reverse();
+  const { data: recos } = useRecommendations();
+  const stats = computeStats(recos);
 
   return (
     <SiteLayout>
