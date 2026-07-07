@@ -18,11 +18,11 @@ export function SiteHeader() {
         <Link to="/" className="flex min-w-0 items-center gap-3">
           <img src={logoAsset.url} alt="The Growth Street" className="h-10 w-10 shrink-0 rounded-lg object-cover sm:h-11 sm:w-11" />
           <div className="min-w-0 leading-tight">
-            <div className="truncate font-display text-sm font-extrabold sm:text-base">
-              The <span className="text-gradient-brand">Growth Street</span>
+            <div className="truncate font-display text-base font-normal sm:text-lg">
+              The Growth Street
             </div>
             <div className="truncate text-[10px] uppercase tracking-[0.18em] text-muted-foreground sm:text-[11px]">
-              Stock Recommendations
+              Research · Strategy
             </div>
           </div>
         </Link>
