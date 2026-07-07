@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Search, TrendingUp, TrendingDown, Minus, ExternalLink } from "lucide-react";
 import { SiteLayout } from "@/components/site-layout";
-import recos from "@/data/recommendations.json";
+import { useRecommendations } from "@/hooks/use-recommendations";
 
 export const Route = createFileRoute("/recommendations")({
   head: () => ({
@@ -23,7 +23,6 @@ export const Route = createFileRoute("/recommendations")({
   component: RecoPage,
 });
 
-type Reco = (typeof recos)[number];
 type StatusFilter = "ALL" | "TP" | "SL" | "HOLD";
 
 function fmtDate(iso: string | null) {
@@ -52,20 +51,21 @@ function StatusPill({ status }: { status: string | null }) {
 }
 
 function RecoPage() {
+  const { data: recos } = useRecommendations();
   const [q, setQ] = useState("");
   const [status, setStatus] = useState<StatusFilter>("ALL");
 
   const rows = useMemo(() => {
-    const all = [...(recos as Reco[])].sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
+    const all = [...recos].sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
     return all.filter((r) => {
       if (status !== "ALL" && (r.status ?? "").toUpperCase() !== status) return false;
       if (q && !r.name?.toLowerCase().includes(q.toLowerCase())) return false;
       return true;
     });
-  }, [q, status]);
+  }, [q, status, recos]);
 
   const totals = useMemo(() => {
-    const list = recos as Reco[];
+    const list = recos;
     const tp = list.filter((r) => r.status === "TP").length;
     const sl = list.filter((r) => r.status === "SL").length;
     const hold = list.filter((r) => r.status === "HOLD").length;
@@ -73,7 +73,7 @@ function RecoPage() {
     const winRate = closed ? (tp / closed) * 100 : 0;
     const avg = list.reduce((a, b) => a + (b.diffPct ?? 0), 0) / (list.length || 1);
     return { total: list.length, tp, sl, hold, winRate, avg };
-  }, []);
+  }, [recos]);
 
   return (
     <SiteLayout>
