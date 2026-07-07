@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Search, TrendingUp, TrendingDown, Minus, ExternalLink } from "lucide-react";
 import { SiteLayout } from "@/components/site-layout";
-import recos from "@/data/recommendations.json";
+import { useRecommendations, type Reco } from "@/hooks/use-recommendations";
 
 export const Route = createFileRoute("/recommendations")({
   head: () => ({
@@ -23,7 +23,6 @@ export const Route = createFileRoute("/recommendations")({
   component: RecoPage,
 });
 
-type Reco = (typeof recos)[number];
 type StatusFilter = "ALL" | "TP" | "SL" | "HOLD";
 
 function fmtDate(iso: string | null) {
