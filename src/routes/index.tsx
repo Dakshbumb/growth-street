@@ -34,104 +34,64 @@ function Index() {
         </div>
         <div className="mx-auto grid max-w-7xl gap-12 px-4 pb-16 pt-16 sm:px-6 md:pt-24 lg:grid-cols-[1.15fr_1fr] lg:px-8">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-3 py-1 text-xs font-medium text-muted-foreground">
-              <Sparkles className="h-3.5 w-3.5 text-primary" />
-              Trusted by 30+ millennial investors
+            <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+              Independent Indian Equity Research
             </div>
-            <h1 className="mt-5 font-display text-4xl font-extrabold leading-[1.05] sm:text-5xl md:text-6xl lg:text-7xl">
-              Smarter <span className="text-gradient-brand">stock ideas</span>.<br />
-              Disciplined portfolios.
+            <h1 className="mt-6 font-display text-5xl font-normal leading-[1.02] tracking-tight sm:text-6xl md:text-7xl lg:text-[5.5rem]">
+              Research with a longer street view.
             </h1>
-            <p className="mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
-              The Growth Street shares research‑backed equity recommendations and manages
-              portfolios for a growing community of young Indian investors — with a fully
-              transparent, publicly tracked record.
+            <p className="mt-8 max-w-xl text-base text-muted-foreground sm:text-lg">
+              The Growth Street brings structured stock research and portfolio strategy to
+              investors who value process, clarity, and thoughtful decision-making.
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <div className="mt-10 flex flex-wrap items-center gap-3">
               <Link
                 to="/recommendations"
-                className="bg-gradient-brand inline-flex items-center gap-2 rounded-lg px-5 py-3 text-sm font-semibold text-primary-foreground shadow-glow transition-transform hover:scale-[1.02]"
+                className="bg-gradient-brand inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-primary-foreground shadow-glow transition-transform hover:scale-[1.02]"
               >
-                View live track record <ArrowRight className="h-4 w-4" />
+                Explore weekly research <ArrowRight className="h-4 w-4" />
               </Link>
-              <a
-                href="https://www.instagram.com/the_growth_street/"
-                target="_blank"
-                rel="noreferrer noopener"
-                className="inline-flex items-center gap-2 rounded-lg border border-border bg-secondary/70 px-5 py-3 text-sm font-semibold text-foreground hover:bg-secondary"
+              <Link
+                to="/about"
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-transparent px-6 py-3 text-sm font-semibold text-foreground hover:bg-secondary/50"
               >
-                <Instagram className="h-4 w-4" /> @the_growth_street
-              </a>
+                Our methodology
+              </Link>
             </div>
-
-            {/* stats row */}
-            <dl className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4">
-              {[
-                { label: "Investors guided", value: "30+" },
-                { label: "Recommendations", value: `${stats.total}` },
-                { label: "Win rate", value: `${stats.winRate.toFixed(0)}%` },
-                { label: "Avg. return", value: `${stats.avgReturn.toFixed(1)}%` },
-              ].map((s) => (
-                <div key={s.label} className="rounded-xl border border-border bg-card/60 p-4 shadow-card">
-                  <dt className="text-xs uppercase tracking-wider text-muted-foreground">{s.label}</dt>
-                  <dd className="mt-1 font-display text-2xl font-extrabold text-foreground sm:text-3xl">
-                    <span className="text-gradient-brand">{s.value}</span>
-                  </dd>
-                </div>
-              ))}
-            </dl>
           </div>
 
-          {/* Hero card */}
+          {/* Research Framework card */}
           <div className="relative">
             <div className="absolute inset-0 -z-10 rounded-3xl bg-gradient-brand-soft blur-2xl" />
-            <div className="rounded-3xl border border-border bg-card/70 p-6 shadow-card backdrop-blur">
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <img src={logoAsset.url} alt="The Growth Street" className="h-12 w-12 rounded-xl" />
-                  <div>
-                    <div className="text-xs uppercase tracking-widest text-muted-foreground">Latest picks</div>
-                    <div className="font-display text-lg font-bold">This week on the desk</div>
+            <div className="rounded-3xl border border-border bg-card/70 p-8 shadow-card backdrop-blur">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
+                    Research Framework
+                  </div>
+                  <div className="mt-3 font-display text-2xl font-normal sm:text-3xl">
+                    Conviction needs context.
                   </div>
                 </div>
-                <Link to="/recommendations" className="hidden text-xs font-semibold text-primary hover:underline sm:inline">
-                  See all →
-                </Link>
+                <LineChart className="h-6 w-6 text-primary" />
               </div>
-              <ul className="mt-5 divide-y divide-border">
-                {recent.map((r) => {
-                  const diff = r.diffPct;
-                  const pending = diff == null;
-                  const positive = !pending && diff >= 0;
-                  return (
-                    <li key={`${r.date}-${r.name}`} className="flex items-center justify-between gap-3 py-3">
-                      <div className="min-w-0">
-                        <div className="truncate font-semibold text-foreground">{r.name}</div>
-                        <div className="text-xs text-muted-foreground">
-                          Entry ₹{r.entry?.toFixed(2)} · TP ₹{r.tp?.toFixed(2)}
-                        </div>
-                      </div>
-                      <div className="shrink-0 text-right">
-                        {pending ? (
-                          <div className="text-sm font-bold text-muted-foreground">Pending</div>
-                        ) : (
-                          <div className={"text-sm font-bold " + (positive ? "text-success" : "text-destructive")}>
-                            {positive ? "+" : ""}
-                            {diff!.toFixed(2)}%
-                          </div>
-                        )}
-                        <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{r.status ?? "NEW"}</div>
-                      </div>
-                    </li>
-                  );
-                })}
+              <ul className="mt-8 space-y-6">
+                {[
+                  { n: "01", label: "Business quality & durability" },
+                  { n: "02", label: "Valuation and expectation gap" },
+                  { n: "03", label: "Technical market structure" },
+                  { n: "04", label: "Portfolio fit & risk" },
+                ].map((item) => (
+                  <li key={item.n} className="flex items-center gap-4">
+                    <span className="text-xs font-semibold text-muted-foreground">{item.n}</span>
+                    <span className="h-[3px] flex-1 rounded-full bg-gradient-brand opacity-80" />
+                    <span className="w-40 shrink-0 text-sm text-foreground/90">{item.label}</span>
+                  </li>
+                ))}
               </ul>
-              <Link
-                to="/recommendations"
-                className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-secondary/70 py-2.5 text-sm font-semibold text-foreground hover:bg-secondary"
-              >
-                Explore the full sheet <ArrowRight className="h-4 w-4" />
-              </Link>
+              <div className="mt-8 rounded-xl border border-border/60 bg-secondary/30 px-4 py-3 text-center text-xs text-muted-foreground">
+                Every recommendation is a research view, not a promise of outcome.
+              </div>
             </div>
           </div>
         </div>
