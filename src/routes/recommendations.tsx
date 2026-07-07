@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Search, TrendingUp, TrendingDown, Minus, ExternalLink } from "lucide-react";
 import { SiteLayout } from "@/components/site-layout";
-import { useRecommendations, type Reco } from "@/hooks/use-recommendations";
+import { useRecommendations } from "@/hooks/use-recommendations";
 
 export const Route = createFileRoute("/recommendations")({
   head: () => ({
